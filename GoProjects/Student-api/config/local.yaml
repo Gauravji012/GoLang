@@ -1,0 +1,8 @@
+// deevelopmeent configuration is pressent in this file
+//we use sqlite db which is a file based db eg. pocket based project which uses sqlite db
+
+
+env: "dev"
+storage_path: "storage/storage.db"
+http_server:
+  address: "localhost:8082"
