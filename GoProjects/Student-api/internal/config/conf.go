@@ -13,7 +13,7 @@ import (
 )
 
 type HTTPServer struct {
-	Addr string
+	Addr string `yaml:"address" env-required:"true"`
 }
 
 // we serialze the struct using “ backtick

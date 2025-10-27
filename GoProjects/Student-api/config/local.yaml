@@ -1,5 +1,5 @@
-// deevelopmeent configuration is pressent in this file
-//we use sqlite db which is a file based db eg. pocket based project which uses sqlite db
+# deevelopmeent configuration is pressent in this file
+# we use sqlite db which is a file based db eg. pocket based project which uses sqlite db
 
 
 env: "dev"
