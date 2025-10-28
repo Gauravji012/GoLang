@@ -17,6 +17,7 @@ import (
 
 	"github.com/Gauravji012/GoLang/GoProjects/Student-api/internal/config"
 	"github.com/Gauravji012/GoLang/GoProjects/Student-api/internal/http/handlers/student"
+	"github.com/Gauravji012/GoLang/GoProjects/Student-api/internal/storage/sqlite"
 )
 
 func main() {
@@ -33,6 +34,14 @@ func main() {
 	// load config
 	cfg := config.MustLoad()
 
+	// database setup
+	storage, err := sqlite.New(cfg)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	slog.Info("storage initialized", slog.String("env", cfg.Env), slog.String("version", "1.0.0"))
+
 	// setup router
 	// in go, net_http package is present which can be used for routing, creating servers.
 	// before this version, we use 3rd party application to handle server side logic like routing, server client etc. query parameter / path parameters ko get krne ke liye bhut sara kaam krna pdta tha, if else use krna pdta tha.
@@ -45,7 +54,7 @@ func main() {
 	// 	w.Write([]byte("Welcome to students api..."))
 	// }) -> this is not a good practice to create end point like this & write handler in this way. we should code like it should be maintainable, scalable.
 
-	router.HandleFunc("POST /api/students", student.New())
+	router.HandleFunc("POST /api/students", student.New(storage))
 	// setup server
 	server := http.Server{
 		Addr:    cfg.Addr,
@@ -73,9 +82,9 @@ func main() {
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second) // port is not block always with this approach if we get any issue while shutting down the server & it returns one function which we take in cancel variable
 	defer cancel()
 
-	err := server.Shutdown(ctx)
-	if err != nil {
-		slog.Error("failed to shutdown server", slog.String("error", err.Error()))
+	e := server.Shutdown(ctx)
+	if e != nil {
+		slog.Error("failed to shutdown server", slog.String("error", e.Error()))
 	}
 	// also write like this in single line
 	// err := server.Shutdown(ctx);err != nil {
