@@ -48,7 +48,6 @@ func New(storage storage.Storage) http.HandlerFunc {
 			return
 		}
 
-
 		// now we create our student
 		lastId, err := storage.CreateStudent(
 			student.Name,
@@ -68,7 +67,6 @@ func New(storage storage.Storage) http.HandlerFunc {
 	}
 }
 
-
 // after creating new routing end point we handle it using hanlder function
 
 func GetById(storage storage.Storage) http.HandlerFunc {
@@ -80,15 +78,28 @@ func GetById(storage storage.Storage) http.HandlerFunc {
 		if err != nil {
 			slog.Info("error while parsing the parameter")
 			response.WriteJson(w, http.StatusBadRequest, response.GeneralError(err))
-			return 
+			return
 		}
 
 		student, err := storage.GetStudentById(intId)
 		if err != nil {
 			slog.Info("error while getting user", slog.String("id", id))
 			response.WriteJson(w, http.StatusInternalServerError, response.GeneralError(err))
-			return 
+			return
 		}
 		response.WriteJson(w, http.StatusOK, student)
+	}
+}
+
+func GetList(storage storage.Storage) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		slog.Info("getting all students")
+
+		students, err := storage.GetStudents()
+		if err != nil {
+			response.WriteJson(w, http.StatusInternalServerError, err)
+			return
+		}
+		response.WriteJson(w, http.StatusOK, students)
 	}
 }
