@@ -16,6 +16,7 @@ import (
 	"time"
 
 	"github.com/Gauravji012/GoLang/GoProjects/Student-api/internal/config"
+	"github.com/Gauravji012/GoLang/GoProjects/Student-api/internal/http/handlers/student"
 )
 
 func main() {
@@ -40,10 +41,11 @@ func main() {
 	//setting up router
 	router := http.NewServeMux()
 
-	router.HandleFunc("GET /", func(w http.ResponseWriter, r *http.Request) {
-		w.Write([]byte("Welcome to students api..."))
-	})
+	// router.HandleFunc("GET /", func(w http.ResponseWriter, r *http.Request) {
+	// 	w.Write([]byte("Welcome to students api..."))
+	// }) -> this is not a good practice to create end point like this & write handler in this way. we should code like it should be maintainable, scalable.
 
+	router.HandleFunc("POST /api/students", student.New())
 	// setup server
 	server := http.Server{
 		Addr:    cfg.Addr,
