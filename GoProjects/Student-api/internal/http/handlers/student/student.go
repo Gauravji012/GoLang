@@ -7,6 +7,7 @@ import (
 	"io"
 	"log/slog"
 	"net/http"
+	"strconv"
 
 	"github.com/Gauravji012/GoLang/GoProjects/Student-api/internal/storage"
 	"github.com/Gauravji012/GoLang/GoProjects/Student-api/internal/types"
@@ -64,5 +65,30 @@ func New(storage storage.Storage) http.HandlerFunc {
 
 		response.WriteJson(w, http.StatusCreated, map[string]int64{"id": lastId})
 		// w.Write([]byte("Welcome to student api"))
+	}
+}
+
+
+// after creating new routing end point we handle it using hanlder function
+
+func GetById(storage storage.Storage) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		id := r.PathValue("id") // to access the query parameter using pathvalue go lang inbuilt function
+		slog.Info("getting a student", slog.String("id", id))
+
+		intId, err := strconv.ParseInt(id, 10, 64)
+		if err != nil {
+			slog.Info("error while parsing the parameter")
+			response.WriteJson(w, http.StatusBadRequest, response.GeneralError(err))
+			return 
+		}
+
+		student, err := storage.GetStudentById(intId)
+		if err != nil {
+			slog.Info("error while getting user", slog.String("id", id))
+			response.WriteJson(w, http.StatusInternalServerError, response.GeneralError(err))
+			return 
+		}
+		response.WriteJson(w, http.StatusOK, student)
 	}
 }
