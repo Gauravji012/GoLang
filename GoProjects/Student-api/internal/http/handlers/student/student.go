@@ -7,6 +7,7 @@ import (
 	"io"
 	"log/slog"
 	"net/http"
+	"reflect"
 	"strconv"
 
 	"github.com/Gauravji012/GoLang/GoProjects/Student-api/internal/storage"
@@ -101,5 +102,28 @@ func GetList(storage storage.Storage) http.HandlerFunc {
 			return
 		}
 		response.WriteJson(w, http.StatusOK, students)
+	}
+}
+
+
+func RemoveStudent(storage storage.Storage) http.HandlerFunc {
+	return func (w http.ResponseWriter, r *http.Request) {
+		id := r.PathValue("id")
+		slog.Info("delete an student", slog.String("id", id), slog.String("type", reflect.TypeOf(id).String()))
+		intId, err := strconv.ParseInt(id, 10, 64)
+		
+		if err != nil {
+			slog.Info("error while parsing the parameter")
+			response.WriteJson(w, http.StatusBadRequest, response.GeneralError(err))
+			return
+		}
+		err = storage.DeleteStudentFromDB(intId)
+		if err != nil {
+			slog.Info("error while delete")
+			response.WriteJson(w, http.StatusInternalServerError, response.GeneralError(err))
+			return 
+		}
+		response.WriteJson(w, http.StatusOK, map[string]string{"message": "student is successfully deleted from db"})
+
 	}
 }
