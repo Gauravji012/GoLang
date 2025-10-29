@@ -92,6 +92,68 @@ func GetById(storage storage.Storage) http.HandlerFunc {
 	}
 }
 
+func UpdateStudentById(storage storage.Storage) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		id := r.PathValue("id")
+		slog.Info("getting a student ", slog.String("id", id))
+		intId, err := strconv.ParseInt(id, 10, 64)
+		if err != nil {
+			slog.Info("error while parsing the parameter")
+			response.WriteJson(w, http.StatusBadRequest, response.GeneralError(err))
+			return
+		}
+
+/*
+var payloadMap map[string]interface{}
+err := json.NewDecoder(r.Body).Decode(&payloadMap)
+if err != nil {
+    // handle error
+}
+
+// Fetch current student from DB by ID (existing data)
+existingStudent, err := storage.GetStudentById(id)
+if err != nil {
+    // handle error
+}
+
+// Update only the fields in payloadMap
+if name, ok := payloadMap["name"].(string); ok {
+    existingStudent.Name = name
+}
+if email, ok := payloadMap["email"].(string); ok {
+    existingStudent.Email = email
+}
+if age, ok := payloadMap["age"].(float64); ok { // JSON numbers decode to float64
+    existingStudent.Age = int(age)
+}
+
+// Now update the DB with existingStudent which has updated fields
+err = storage.UpdateStudentInDB(id, existingStudent)
+if err != nil {
+    // handle error
+}
+
+*/
+		var student types.Student
+		// decoding the user request data
+		err = json.NewDecoder(r.Body).Decode(&student)
+		if errors.Is(err, io.EOF) {
+			response.WriteJson(w, http.StatusBadRequest, response.GeneralError(fmt.Errorf("empty body")))
+			return
+		}
+		if err != nil {
+			response.WriteJson(w, http.StatusBadRequest, response.GeneralError(err))
+			return
+		}
+		err = storage.UpdateStudent(intId, student)
+		if err != nil {
+			response.WriteJson(w, http.StatusInternalServerError, response.GeneralError(err))
+			return 
+		}
+		response.WriteJson(w, http.StatusOK, map[string]string{"message": "student is successfully updated"})
+	}
+}
+
 func GetList(storage storage.Storage) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		slog.Info("getting all students")
