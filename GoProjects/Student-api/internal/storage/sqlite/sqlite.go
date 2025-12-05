@@ -75,9 +75,9 @@ func (s *Sqlite) GetStudentById(id int64) (types.Student, error) {
 	// first we serialize/handle  the data in serialize manner that comes in stmt variable after executing the query
 
 	var student types.Student
-	err = stmt.QueryRow(id).Scan(&student.Id, &student.Name, &student.Email, &student. Age)
+	err = stmt.QueryRow(id).Scan(&student.Id, &student.Name, &student.Email, &student.Age)
 	if err != nil {
-		if err == sql.ErrNoRows{
+		if err == sql.ErrNoRows {
 			return types.Student{}, fmt.Errorf("no student found with id %s", fmt.Sprint(id))
 		}
 		return types.Student{}, fmt.Errorf("query error: %w", err)
@@ -86,7 +86,7 @@ func (s *Sqlite) GetStudentById(id int64) (types.Student, error) {
 
 }
 
-func (s *Sqlite) DeleteStudentFromDB(id int64) (error) {
+func (s *Sqlite) DeleteStudentFromDB(id int64) error {
 	stmt, err := s.Db.Prepare("DELETE FROM students WHERE id = ?")
 	if err != nil {
 		return err
@@ -110,7 +110,6 @@ func (s *Sqlite) GetStudents() ([]types.Student, error) {
 		return nil, err
 	}
 	defer rows.Close()
-
 
 	var students []types.Student
 
@@ -137,7 +136,6 @@ func (s *Sqlite) UpdateStudent(id int64, payload types.Student) error {
 		return err
 	}
 	return nil
-	
 
 	/* dynamic query to update particular field value
 
@@ -167,6 +165,6 @@ func (s *Sqlite) UpdateStudent(id int64, payload types.Student) error {
 	if err != nil {
 		return err
 	}
-	return nil	
+	return nil
 	*/
 }
