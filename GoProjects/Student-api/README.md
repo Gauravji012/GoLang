@@ -1,3 +1,4 @@
+Student CRUD API - Go Backend
 A production-ready RESTful API for managing student records using Go's standard library, SQLite, and structured configuration. Demonstrates clean architecture with graceful shutdown and full CRUD operations.
 ​
 
