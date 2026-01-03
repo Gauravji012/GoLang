@@ -71,14 +71,15 @@ Graceful stop: Ctrl+C.
 
 ## Project Structure
 student-api/
-├── main.go # Entry: config → DB → router → server
-├── conf.go # YAML config loader
-├── local.yaml # Config file
-├── student.go # Models + handlers
-├── types.go # Shared types
-├── response.go # JSON helpers
-├── sqlite.go # DB init/queries
-└── storage.go # Interface
+├── main.go      # Entry: config → DB → router → server
+├── conf.go      # YAML config loader
+├── local.yaml   # Config file
+├── student.go   # Models + handlers
+├── types.go     # Shared types
+├── response.go  # JSON helpers
+├── sqlite.go    # DB init/queries
+└── storage.go   # Interface
+
 
 text
 
